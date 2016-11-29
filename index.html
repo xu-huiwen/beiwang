@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" ng-app="reminder">
+<head>
+	<meta charset="UTF-8" />
+	<title>Document</title>
+	<link rel="stylesheet" href="css/iclou.css" />
+	<script src="js/jquery.js"></script>
+	<script src="js/angular.js"></script>
+	<script src="js/icl.js"></script>
+	<script>
+	    $(function(){
+//	    	$(".selector").on("click",function(){
+//	    		$(".selectorShow").toggleClass("active")
+//	    	})
+	    	//自适应
+			window.onresize = function(){
+				var list = document.querySelector('.list');
+				var reminder = document.querySelector('.reminder');
+				var wid = list.offsetWidth;
+				reminder.style.left = wid + 'px';
+			}
+			window.onresize();
+		})
+		
+	</script>
+</head>
+<body ng-controller="ctrl">
+	<!--左边-->
+	<div class="list">
+		<div class="title">
+			<div class="icloud"></div>
+			<div class="plus"ng-click="addList();save2local()"></div>
+		</div>
+		<div class="planbox">
+			<i class="plan"></i>
+			<span class="plantit" >已计划</span>
+		</div>
+		<div my-ul>
+			<li class="planbox" ng-repeat="v in lists track by $index"ng-click="cu=$index"ng-class="{focus:cu===$index}">
+				<div class="colors {{v.theme}}"></div>
+				<input type="text" class="listscon" ng-model='v.name'
+					ng-keyup="save2local()"/>
+			</li>
+		</div>
+	</div>
+	<!--右边-->
+	<div class="reminder">
+		<div class="search">
+			<div class="searchimg"></div>
+			<div class="searchIn">搜索所有提醒</div>
+		</div>
+		<h3 class="{{lists[cu].theme}}">{{lists[cu].name}}</h3>
+		<div my-button></div>
+		<!--已完成-->
+		<div xy-x>
+		<!--<ul class="finishedEvent">-->
+			<li class="ng-binding">已完成共：{{count()}}项</li>
+			<li class="finished"ng-repeat="v in lists[cu].todos track by $index"ng-if="v.state===1">
+				<input type="text"ng-model="v.name" />
+				<div class="btbxb1">
+					<div class="li{{lists[cu].theme}} liTop"></div>
+					<div class="li{{lists[cu].theme}} liDown"></div>
+					<div class="li{{lists[cu].theme}} liCon"></div>
+				</div>
+				<div class="do do{{lists[cu].theme}}"ng-click="v.state=0;save2local()"></div>
+				<span class="do{{lists[cu].theme}} del"ng-click="delEvent($index)">删除</span>
+			</li>
+		<!--</ul>-->
+		</div>
+		<!--未完成-->
+		<div wd-l>
+		<!--<ul class="noFinishedEvent">-->
+			<li class="newEvent">未完成共：{{count1()}}项</li>
+			<li ng-repeat="v in lists[cu].todos track by $index"ng-if="v.state===0"class="nofinishx" >
+				<input type="text" ng-model="v.name"ng-keyup="save($event)"/>
+				<div class="btbxb1">
+					<div class="li{{lists[cu].theme}} liTop"></div>
+					<div class="li{{lists[cu].theme}} liDown"></div>
+					<div class="li{{lists[cu].theme}} liCon"></div>
+				</div>
+				<div class="doOrNo doOrNo{{lists[cu].theme}}" ng-click="v.state=1;save2local()"></div>
+				<span class="do{{lists[cu].theme}} del"ng-click="delEvent($index)">删除</span>
+			</li>
+			<!--新增-->
+			<li class="newEvent"ng-click="lists[cu].todos.push({name:value,state:0});value='';save2local()">
+				<input type="text" ng-model="value"/>新项目...
+			</li>
+		<!--</ul>-->
+		</div>
+	</div>
+	<!--隐藏的颜色卡-->
+	<div class="selectorShow">
+		<input type="text" class="selectorText {{lists[cu].theme}}"ng-model="lists[cu].name"ng-keyup="save2local()"/>
+		<span>列表颜色</span>
+		<ul>
+			<li ng-repeat="v in colors">
+				<em id="{{v}}"ng-click="lists[cu].theme = v;save2local()"></em>
+			</li>
+		</ul>
+		<div class="button">
+			<span id="del"ng-click="del();save2local()">删除</span>
+			<span id="back">完成</span>
+		</div>
+	</div>
+</body>
+</html>
